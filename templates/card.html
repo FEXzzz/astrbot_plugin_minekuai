@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><style>
+* { box-sizing: border-box; }
+html, body { width: 900px; margin: 0; padding: 0; background: #F6F8F5; }
+body { color: #172D25; font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+.card { width: 900px; padding: 40px; }
+.masthead { display: flex; align-items: center; gap: 17px; padding-bottom: 25px; border-bottom: 2px solid #174D36; }
+.mark { width: 42px; height: 42px; background: #174D36; box-shadow: 10px -10px 0 #D8E5B9; }
+.brand { font: 700 16px "Consolas", monospace; letter-spacing: 3px; color: #174D36; }
+h1 { font-family: "Noto Serif CJK SC", "Microsoft YaHei", serif; font-size: 34px; line-height: 1.35; margin: 4px 0 0; overflow-wrap: anywhere; }
+.row { display: flex; gap: 18px; padding: 25px 0; border-bottom: 1px solid #D9E2D8; }
+.slot { flex: 0 0 38px; height: 38px; background: #D8E5B9; color: #174D36; border: 2px solid #174D36; text-align: center; font: 700 19px/34px "Consolas", monospace; }
+.body { flex: 1; min-width: 0; }
+h2 { font-size: 25px; line-height: 1.4; margin: 0 0 6px; overflow-wrap: anywhere; }
+.subtitle { font-size: 16px; color: #174D36; overflow-wrap: anywhere; white-space: pre-wrap; }
+.description { font-size: 20px; line-height: 1.65; margin-top: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.meta { margin-top: 11px; padding: 9px 12px; background: #EDF3F7; color: #425D53; font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+.note { color: #50665B; font-size: 17px; line-height: 1.7; margin-top: 24px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.footer { margin-top: 28px; font-size: 13px; color: #50665B; letter-spacing: 1px; }
+</style></head>
+<body><main class="card">
+<header class="masthead"><div class="mark"></div><div><div class="brand">MINEKUAI / RESOURCE INDEX</div><h1>{{ title | e }}</h1></div></header>
+{% for row in rows %}
+<section class="row"><div class="slot">{{ loop.index }}</div><div class="body">
+<h2>{{ row.title | e }}</h2>
+{% if row.subtitle %}<div class="subtitle">{{ row.subtitle | e }}</div>{% endif %}
+{% if row.description %}<div class="description">{{ row.description | e }}</div>{% endif %}
+{% if row.meta %}<div class="meta">{{ row.meta | e }}</div>{% endif %}
+</div></section>
+{% endfor %}
+{% if note %}<div class="note">{{ note | e }}</div>{% endif %}
+<footer class="footer">麦块资源助手 · 链接见随附文本 · /麦块 帮助</footer>
+</main></body></html>

@@ -1,0 +1,564 @@
+{
+  "instance_enabled": {
+    "type": "bool",
+    "description": "启用实例管理",
+    "default": false
+  },
+  "instance_api_key": {
+    "type": "string",
+    "description": "面板 API 密钥",
+    "default": "",
+    "secret": true,
+    "hint": "完整的 mkc_ 开头密钥；仅用于 client-api。secret 只遮罩界面，不加密文件。请配置机器人出口 IP 白名单。"
+  },
+  "instance_aliases": {
+    "type": "template_list",
+    "description": "实例别名",
+    "default": [],
+    "hint": "添加别名和8位 identifier；旧版别名字典将自动迁移。",
+    "templates": {
+      "instance": {
+        "name": "实例别名",
+        "display_item": "alias",
+        "items": {
+          "alias": {
+            "type": "string",
+            "description": "别名",
+            "default": ""
+          },
+          "identifier": {
+            "type": "string",
+            "description": "8位实例 identifier",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  "operation_permissions": {
+    "type": "object",
+    "description": "每项实例操作的会话权限",
+    "items": {
+      "list": {
+        "type": "object",
+        "description": "实例列表",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "status": {
+        "type": "object",
+        "description": "实例状态",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "start": {
+        "type": "object",
+        "description": "启动",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "stop": {
+        "type": "object",
+        "description": "停止",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "restart": {
+        "type": "object",
+        "description": "重启",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "kill": {
+        "type": "object",
+        "description": "强停",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "command": {
+        "type": "object",
+        "description": "控制台命令",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "startup_read": {
+        "type": "object",
+        "description": "读取启动配置",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "startup_write": {
+        "type": "object",
+        "description": "修改启动变量",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "allowed_games": {
+        "type": "object",
+        "description": "可切换游戏",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "game_switch": {
+        "type": "object",
+        "description": "切换游戏",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "modpack_switch": {
+        "type": "object",
+        "description": "切换整合包",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      },
+      "file_read": {
+        "type": "object",
+        "description": "读取文件",
+        "items": {
+          "scope": {
+            "type": "string",
+            "description": "允许的会话",
+            "default": "private",
+            "options": [
+              "disabled",
+              "private",
+              "group",
+              "both"
+            ],
+            "labels": [
+              "禁用",
+              "仅私聊",
+              "仅群聊",
+              "群聊和私聊"
+            ]
+          },
+          "allowed_groups": {
+            "type": "list",
+            "description": "允许的群",
+            "default": [],
+            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+          }
+        }
+      }
+    }
+  },
+  "instance_requests_per_minute": {
+    "type": "int",
+    "description": "实例接口每分钟请求预算",
+    "default": 120,
+    "slider": {
+      "min": 1,
+      "max": 300,
+      "step": 1
+    }
+  },
+  "resource_requests_per_minute": {
+    "type": "int",
+    "description": "资源接口每分钟请求预算",
+    "default": 120,
+    "slider": {
+      "min": 1,
+      "max": 600,
+      "step": 1
+    }
+  },
+  "read_timeout": {
+    "type": "int",
+    "description": "读取超时（秒）",
+    "default": 10,
+    "slider": {
+      "min": 1,
+      "max": 60,
+      "step": 1
+    }
+  },
+  "write_timeout": {
+    "type": "int",
+    "description": "写操作超时（秒）",
+    "default": 30,
+    "slider": {
+      "min": 1,
+      "max": 120,
+      "step": 1
+    }
+  },
+  "confirmation_timeout": {
+    "type": "int",
+    "description": "操作确认有效期（秒）",
+    "default": 60,
+    "slider": {
+      "min": 10,
+      "max": 300,
+      "step": 1
+    }
+  },
+  "page_size": {
+    "type": "int",
+    "description": "每页资源／实例条数",
+    "default": 5,
+    "slider": {
+      "min": 1,
+      "max": 10,
+      "step": 1
+    }
+  },
+  "cards_enabled": {
+    "type": "bool",
+    "description": "图片卡片（失败自动回退文本）",
+    "default": true
+  },
+  "render_timeout": {
+    "type": "int",
+    "description": "资源卡片渲染超时（秒）",
+    "default": 20,
+    "slider": {
+      "min": 1,
+      "max": 60,
+      "step": 1
+    }
+  },
+  "local_font_path": {
+    "type": "string",
+    "description": "本地中文字体路径",
+    "default": "",
+    "hint": "私有实例卡片仅本地绘制。Windows 自动查找微软雅黑，Linux 查找 Noto CJK 或文泉驿；未找到字体则回退文本。"
+  },
+  "only_translated": {
+    "type": "bool",
+    "description": "仅搜索已翻译资源",
+    "default": false,
+    "hint": "默认包含全部资源；有中文字段优先展示中文。"
+  },
+  "allow_prerelease": {
+    "type": "bool",
+    "description": "下载默认允许预发布版",
+    "default": false
+  },
+  "cache_enabled": {
+    "type": "bool",
+    "description": "启用查询缓存",
+    "default": true
+  },
+  "resource_cache_seconds": {
+    "type": "object",
+    "description": "资源缓存有效期（秒，0 为不缓存）",
+    "items": {
+      "search": {
+        "type": "int",
+        "description": "搜索与分面",
+        "default": 300,
+        "slider": {
+          "min": 0,
+          "max": 86400,
+          "step": 1
+        }
+      },
+      "detail": {
+        "type": "int",
+        "description": "资源详情",
+        "default": 3600,
+        "slider": {
+          "min": 0,
+          "max": 86400,
+          "step": 1
+        }
+      },
+      "versions": {
+        "type": "int",
+        "description": "版本列表",
+        "default": 600,
+        "slider": {
+          "min": 0,
+          "max": 86400,
+          "step": 1
+        }
+      },
+      "categories": {
+        "type": "int",
+        "description": "分类标签",
+        "default": 86400,
+        "slider": {
+          "min": 0,
+          "max": 86400,
+          "step": 1
+        }
+      }
+    }
+  }
+}

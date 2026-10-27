@@ -25,6 +25,7 @@ from .minekuai.errors import MinekuaiError, redact, redact_data
 from .minekuai.http import ApiClient
 from .minekuai.models import Actor
 from .minekuai.panel import PanelService
+from .minekuai.platforms import text_chunks
 from .minekuai.rendering import LocalCards
 from .minekuai.resources import ResourceService
 from .minekuai.settings import Settings
@@ -131,14 +132,17 @@ class MinekuaiPlugin(Star):
         if not rendered:
             self.app.get_result(self._actor(event), result_id)
             text = redact(result.text(), self.settings.api_key)
-            for start in range(0, len(text), 4000):
-                self.app.get_result(self._actor(event), result_id)
-                await event.send(event.plain_result(text[start : start + 4000]))
+            await self._send_text(event, text, result_id)
         if result.links:
             self.app.get_result(self._actor(event), result_id)
             links = "\n".join(f"{link['label']}\n{link['url']}" for link in result.links)
-            for start in range(0, len(links), 4000):
-                await event.send(event.plain_result(links[start : start + 4000]))
+            await self._send_text(event, links, result_id)
+
+    async def _send_text(self, event, text, result_id=None):
+        for chunk in text_chunks(text, event.get_platform_name()):
+            if result_id is not None:
+                self.app.get_result(self._actor(event), result_id)
+            await event.send(event.plain_result(chunk))
 
     async def _run(self, event, command, args=""):
         task = asyncio.current_task()
@@ -156,13 +160,13 @@ class MinekuaiPlugin(Star):
             result_id, _ = await self.app.execute(actor, action, **kwargs)
             await self._send_result(event, actor, result_id)
         except MinekuaiError as exc:
-            await event.send(event.plain_result(redact(str(exc), self.settings.api_key)))
+            await self._send_text(event, redact(str(exc), self.settings.api_key))
         except asyncio.CancelledError:
             raise
         except Exception as exc:
             self.logger.error("麦块指令处理异常：" + type(exc).__name__)
-            await event.send(
-                event.plain_result("处理失败，请检查插件日志中的错误类型，或发送 /麦块 帮助。")
+            await self._send_text(
+                event, "处理失败，请检查插件日志中的错误类型，或发送 /麦块 帮助。"
             )
         finally:
             self.tasks.discard(task)

@@ -62,9 +62,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -91,9 +91,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -120,9 +120,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -149,9 +149,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -178,9 +178,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -207,9 +207,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -236,9 +236,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -265,9 +265,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -294,9 +294,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -323,9 +323,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -352,9 +352,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -381,9 +381,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       },
@@ -410,9 +410,9 @@
           },
           "allowed_groups": {
             "type": "list",
-            "description": "允许的群",
+            "description": "允许的群或频道",
             "default": [],
-            "hint": "群聊模式必须显式填写群号；空列表禁止所有群。可用 平台实例ID:群号 区分多个机器人。无论会话范围，调用者都必须是 AstrBot 管理员。"
+            "hint": "群聊模式必须显式填写：OneBot 群号、QQ 官方群 group_openid／子频道 ID，或 Discord 频道／帖子 ID（不是服务器 ID）。空列表禁止所有群和频道。可用 平台实例ID:群或频道ID 区分机器人；调用者必须是 AstrBot 管理员。"
           }
         }
       }

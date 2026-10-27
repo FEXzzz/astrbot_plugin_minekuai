@@ -1,4 +1,4 @@
-"""Exercise the real AstrBot loader/SDK with synthetic transport, never QQ or a panel.
+"""Exercise the real AstrBot loader/SDK with synthetic platform transport and panel.
 
 Example: python scripts/check_astrbot_sdk.py --sdk .dev/astrbot-sdk --deps .dev/sdkdeps
 """
@@ -102,7 +102,7 @@ async def check(runtime):
     plugin.settings.config["cards_enabled"] = False
 
     class RecordingEvent(AstrMessageEvent):
-        def __init__(self, text, admin=True, group=""):
+        def __init__(self, text, admin=True, group="", platform="aiocqhttp"):
             msg = AstrBotMessage()
             msg.type = MessageType.GROUP_MESSAGE if group else MessageType.FRIEND_MESSAGE
             msg.sender = SimpleNamespace(user_id="10001", nickname="测试管理员")
@@ -112,7 +112,10 @@ async def check(runtime):
             msg.message = []
             msg.message_str = text
             super().__init__(
-                text, msg, PlatformMetadata("aiocqhttp", "合成测试", "qq-test"), group or "10001"
+                text,
+                msg,
+                PlatformMetadata(platform, "合成测试", platform + "-test"),
+                group or "10001",
             )
             self.role = "admin" if admin else "member"
             self.is_at_or_wake_command = True
@@ -188,6 +191,77 @@ async def check(runtime):
     allowed = json.loads(await status_tool.call(wrapper, identifier="生存服"))
     assert allowed["rows"] and "running" in allowed["rows"][0]["subtitle"]
 
+    # Platform adapters expose the same event interface. Exercise actual SDK filters,
+    # plugin message chains and tools using each platform's channel/private semantics.
+    from minekuai.models import Result
+
+    platform_checks = []
+    for platform, group, limit in [
+        ("aiocqhttp", "123456", 4000),
+        ("qq_official", "GROUP_OPENID", 1500),
+        ("qq_official_webhook", "WEBHOOK_OPENID", 1500),
+        ("discord", "123456789012345678", 2000),
+    ]:
+        for channel in ("", group):
+            evt = RecordingEvent("麦块 搜索 jei 类型=模组", group=channel, platform=platform)
+            for event_filter in handler.event_filters:
+                assert event_filter.filter(evt, astrbot_config)
+            await handler.handler(evt, **evt.get_extra("parsed_params", {}))
+            assert evt.sent
+            actor = plugin._actor(evt)
+            assert actor.is_private == (not channel) and actor.group_id == channel
+            config = plugin.settings.config["operation_permissions"]["status"]
+            config.update(scope="both", allowed_groups=[f"{actor.platform_id}:{group}"])
+            tool_context = SimpleNamespace(context=SimpleNamespace(event=evt))
+            status = json.loads(await status_tool.call(tool_context, identifier="ab12cd34"))
+            assert status["rows"] and "error" not in status
+            denied = RecordingEvent("test", admin=False, group=channel, platform=platform)
+            denied_output = json.loads(
+                await status_tool.call(
+                    SimpleNamespace(context=SimpleNamespace(event=denied)), identifier="ab12cd34"
+                )
+            )
+            assert "error" in denied_output
+
+            body = Result(
+                "长消息",
+                note="配置内容🙂\n" * 900,
+                links=[{"label": "下载", "url": "https://example.invalid/mod.jar"}],
+            )
+            body_id = plugin.app.results.save(actor, body, {"action": "help"})
+            evt.sent.clear()
+            await plugin._send_result(evt, actor, body_id, force_text=True)
+            parts = [part.text for message in evt.sent for part in message.chain]
+            assert "".join(parts) == body.text() + "下载\nhttps://example.invalid/mod.jar"
+            assert all(len(part.encode("utf-16-le")) // 2 <= limit for part in parts)
+
+            # Use the same presentation path as minekuai_present for cards and failures.
+            previous_render = plugin.html_render
+
+            async def fake_render(*args, **kwargs):
+                return "https://example.invalid/card.png"
+
+            plugin.html_render = fake_render
+            plugin.settings.config["cards_enabled"] = True
+            card = Result("资源卡片", rows=[{"title": "测试资源"}], links=body.links)
+            card_id = plugin.app.results.save(actor, card, {"action": "help"})
+            evt.sent.clear()
+            await plugin._send_result(evt, actor, card_id)
+            assert any(part.type == "Image" for message in evt.sent for part in message.chain)
+
+            async def broken_render(*args, **kwargs):
+                raise RuntimeError("synthetic render failure")
+
+            plugin.html_render = broken_render
+            evt.sent.clear()
+            await plugin._send_result(evt, actor, card_id)
+            assert "".join(part.text for message in evt.sent for part in message.chain).startswith(
+                card.text()
+            )
+            plugin.html_render = previous_render
+            plugin.settings.config["cards_enabled"] = False
+        platform_checks.append(platform)
+
     # Validate real SDK KV persistence as well as cleanup of both transports.
     await plugin.put_kv_data("switch_cooldowns", {"synthetic:ab12cd34": 1})
     assert await plugin.get_kv_data("switch_cooldowns", {}) == {"synthetic:ab12cd34": 1}
@@ -231,7 +305,11 @@ async def check(runtime):
         "reload_without_duplicates": True,
         "query_after_reload": True,
         "terminate_closes_clients": True,
+        "synthetic_platform_matrix": platform_checks,
+        "platform_text_chunking_and_links": True,
+        "platform_cards_and_text_fallback": True,
         "live_qq": False,
+        "live_discord": False,
         "live_panel": False,
     }
     destination = ROOT / ".dev" / "verification"

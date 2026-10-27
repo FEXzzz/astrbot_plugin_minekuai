@@ -1,18 +1,34 @@
 # 麦块资源与实例助手
 
-适用于 **AstrBot >=4.16,<5 / Python >=3.12 / QQ OneBot v11（NapCat）**。
+适用于 **AstrBot >=4.16,<5 / Python >=3.12**，支持 **QQ OneBot v11（NapCat）、QQ 官方机器人（WebSocket／Webhook）及 Discord**。
 
 搜索 Minecraft 模组、整合包、光影、资源包和服务端插件；使用同一套指令和 AI 工具查询麦块实例，并在管理员确认后执行操作。
 
 ## 安装
 
-1. 在 AstrBot WebUI 的插件管理中选择从仓库安装，填写 [FEXzzz/astrbot_plugin_minekuai](https://github.com/FEXzzz/astrbot_plugin_minekuai)。也可上传本地 `astrbot_plugin_minekuai-v1.1.0.zip`，或将完整插件目录放入 `AstrBot/data/plugins/astrbot_plugin_minekuai/`。
+1. 在 AstrBot WebUI 的插件管理中选择从仓库安装，填写 [FEXzzz/astrbot_plugin_minekuai](https://github.com/FEXzzz/astrbot_plugin_minekuai)。也可上传本地 `astrbot_plugin_minekuai-v1.2.0.zip`，或将完整插件目录放入 `AstrBot/data/plugins/astrbot_plugin_minekuai/`。
 2. 安装依赖并重载插件。资源搜索不需要 API Key。
 3. 在插件配置面板开启图片卡片；资源卡片使用 AstrBot 配置的文转图服务，失败时自动回退文本。
 4. 实例管理默认关闭。需要时开启 `instance_enabled`，填写完整的 `mkc_...` 密钥，并在 AstrBot 中设置管理员账号。
 5. 在 `operation_permissions` 中逐项选择会话权限，重载插件使 AstrBot 应用保存后的配置。执行服务始终读取当前配置。
 
 实例密钥只在配置面板填写，不通过聊天或 AI 工具绑定。`secret` 只遮罩界面，不加密磁盘上的配置文件。实例接口使用独立 HTTP 客户端，不会把密钥发送给资源、图片或下载地址。
+
+## 消息平台
+
+先在 AstrBot 中接入对应平台，插件共用 `/麦块`、`/mk` 指令和 AI 工具。机器人 Token 填在 AstrBot 平台配置中，麦块插件仅填写面板 API 密钥。
+
+| 平台 | AstrBot 适配器 | 实例权限的 `allowed_groups` 填法 |
+|---|---|---|
+| QQ OneBot v11 | `aiocqhttp` | QQ 群号 |
+| QQ 官方机器人 | `qq_official` / `qq_official_webhook` | 群聊填 `group_openid`；QQ 频道填子频道 ID |
+| Discord | `discord` | 当前文字频道或帖子的 channel ID，不能填服务器 guild ID |
+
+QQ 官方机器人的用户 openid、群 openid 与普通 QQ 号、群号不同，应以 AstrBot 接收事件中的 ID 为准，管理员身份也使用该平台的用户 ID 配置。Discord 服务器管理员和 QQ 群管理员仍须加入 AstrBot 管理员列表后才能操作实例。多个机器人建议填写 `平台实例ID:群或频道ID`，其中平台实例 ID 为 AstrBot 机器人配置的 ID。
+
+在群或频道里按宿主的唤醒配置 @机器人后发送指令；Discord 使用普通聊天指令，插件不额外注册 Discord 原生应用斜杠命令。Discord 需允许机器人查看频道、发送消息及附加图片，并按 [AstrBot 接入文档](https://docs.astrbot.app/platform/discord.html) 配置消息内容权限。QQ 官方机器人接入方式见 [AstrBot 文档](https://docs.astrbot.app/platform/qqofficial.html)。
+
+Discord 文本按最多 2000 个 UTF-16 单位分段，QQ 官方机器人采用最多 1500 单位的保守分段，优先在换行处分开；图片与可复制链接分别发送。图片渲染失败时回退文本。QQ 官方平台对链接域名、消息审核和回复时效的限制仍由平台控制，链接发送失败时需在官方平台检查域名与权限设置。私有实例卡片始终在本地绘制。
 
 ## AstrBot 旧版本兼容
 
@@ -100,7 +116,7 @@
 | `group` | 仅允许列表中的群 |
 | `both` | 管理员私聊及允许列表中的群 |
 
-无论 scope 如何，调用者都必须是 **AstrBot 管理员**，普通 QQ 群管理员没有权限。群列表为空时不允许任何群。列表可以写 `123456789`，也可写 `平台实例ID:123456789` 区分多个机器人。
+无论 scope 如何，调用者都必须是 **AstrBot 管理员**，QQ 群管理员或 Discord 服务器管理员身份不会自动授予实例权限。群列表为空时不允许任何群或频道。列表可以写群号／openid／频道 ID，也可写 `平台实例ID:群或频道ID` 区分多个机器人。
 
 可以单独设置列表、状态、四种电源操作、控制台、启动配置读写、可切换游戏、两种切换和文件读取。例如仅将 `status` 设为 `both` 并添加群号，其他项继续 `private`；也可以授权文件读取在指定群使用。
 

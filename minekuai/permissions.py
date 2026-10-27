@@ -36,7 +36,8 @@ class Guard:
         groups = item.get("allowed_groups", [])
         if not isinstance(groups, list):
             groups = []
-        # Plain QQ group IDs apply to this QQ adapter; qualified IDs disambiguate bots.
+        # AstrBot group IDs are QQ openids or channel IDs on the other adapters.
+        # Qualified IDs disambiguate platform instances; never match an entire guild.
         accepted = {str(g) for g in groups}
         if not actor.group_id or not (
             actor.group_id in accepted or f"{actor.platform_id}:{actor.group_id}" in accepted

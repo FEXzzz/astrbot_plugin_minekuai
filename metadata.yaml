@@ -2,7 +2,7 @@ name: astrbot_plugin_minekuai
 display_name: 麦块资源与实例助手
 short_desc: 查询 Minecraft 资源，并在逐项权限与确认后管理麦块实例。
 desc: 支持九类来源的资源搜索、详情、版本和下载链接，提供图片卡片及 AI 工具；支持带独立会话权限和一次性操作确认的麦块实例管理。
-version: 1.2.0
+version: 1.2.1
 author: FEX
 repo: https://github.com/FEXzzz/astrbot_plugin_minekuai
 astrbot_version: ">=4.16,<5"

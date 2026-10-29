@@ -29,6 +29,9 @@ class Backend:
         self.states = []
         self.file = "max-players=20\nrcon.password=do-not-disclose\n"
         self.variable = "20"
+        self.server_name = "测试生存服"
+        self.server_description = ""
+        self.server_details = {}
         self.write_failure = None
         self.detail = {
             "slug": "jei",
@@ -116,7 +119,15 @@ class Backend:
                 return httpx.Response(
                     200,
                     json={
-                        "data": [{"attributes": {"identifier": "ab12cd34", "name": "测试生存服"}}],
+                        "data": [
+                            {
+                                "attributes": {
+                                    "identifier": "ab12cd34",
+                                    "name": self.server_name,
+                                    "description": self.server_description,
+                                }
+                            }
+                        ],
                         "meta": {"pagination": {"total_pages": 1}},
                     },
                 )
@@ -125,7 +136,11 @@ class Backend:
                 return httpx.Response(
                     200,
                     json={
-                        "attributes": {"name": "测试生存服"},
+                        "attributes": {
+                            "name": self.server_name,
+                            "description": self.server_description,
+                            **self.server_details,
+                        },
                         "stats": {
                             "attributes": {
                                 "current_state": state,

@@ -9,6 +9,7 @@ import time
 from dataclasses import dataclass
 
 from .errors import MinekuaiError, redact
+from .minecraft_text import display_text, server_row
 from .models import Actor, Result
 from .permissions import Guard
 from .resources import plain
@@ -140,9 +141,8 @@ class PanelService:
         items = [attributes(i) for i in collection(data, "servers")]
         rows = [
             {
-                "title": plain(i.get("name") or "未命名实例", 80),
+                **server_row(i, secret=self.settings.api_key),
                 "subtitle": str(i.get("identifier", "标识缺失")),
-                "description": "仅此密钥可访问的实例",
             }
             for i in items
         ]
@@ -171,9 +171,9 @@ class PanelService:
         identifier = server["identifier"]
         current, state, resources = await self._status(identifier)
         row = {
-            "title": plain(current.get("name") or server.get("name") or identifier, 80),
+            **server_row({**server, **current}, identifier, secret=self.settings.api_key),
             "subtitle": identifier + " · " + state,
-            "description": "\n".join(
+            "meta": "\n".join(
                 [
                     "CPU：" + metric(resources, ["cpu_absolute", "cpu"]),
                     "内存：" + metric(resources, ["memory_bytes", "memory"]),
@@ -402,7 +402,7 @@ class PanelService:
         pending = Pending(
             actor.key,
             identifier,
-            plain(server.get("name") or identifier, 80),
+            display_text(server.get("name") or identifier, 160)[0],
             operation,
             dict(payload),
             self.fingerprint,

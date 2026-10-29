@@ -8,7 +8,7 @@
 
 ## 安装
 
-1. 在 AstrBot WebUI 的插件管理中选择从仓库安装，填写 [FEXzzz/astrbot_plugin_minekuai](https://github.com/FEXzzz/astrbot_plugin_minekuai)。也可上传本地 `astrbot_plugin_minekuai-v1.2.0.zip`，或将完整插件目录放入 `AstrBot/data/plugins/astrbot_plugin_minekuai/`。
+1. 在 AstrBot WebUI 的插件管理中选择从仓库安装，填写 [FEXzzz/astrbot_plugin_minekuai](https://github.com/FEXzzz/astrbot_plugin_minekuai)。也可上传本地 `astrbot_plugin_minekuai-v1.2.1.zip`，或将完整插件目录放入 `AstrBot/data/plugins/astrbot_plugin_minekuai/`。
 2. 安装依赖并重载插件。资源搜索不需要 API Key。
 3. 在插件配置面板开启图片卡片；资源卡片使用 AstrBot 配置的文转图服务，失败时自动回退文本。
 4. 实例管理默认关闭。需要时开启 `instance_enabled`，填写完整的 `mkc_...` 密钥，并在 AstrBot 中设置管理员账号。
@@ -106,6 +106,8 @@ Discord 文本按最多 2000 个 UTF-16 单位分段，QQ 官方机器人采用�
 **切换游戏／整合包会删除实例全部文件并重装。请先在面板完成备份。** 两种切换共享每实例 60 秒冷却；插件保存冷却记录。`modpack_id` 是面板安装目录中的 ID；`file_name` 是面板提供的文件名，不是下载 URL。
 
 电源成功响应表示已受理，插件最多查询 30 秒的状态；重启只有观察到状态转换才报告完成。命令成功只表示已提交，不代表拿到了输出。文件只读，最大 1 MB，按最多 4000 字符分页；常见密码、令牌字段会遮罩。私有文件和启动变量使用文本，私有状态卡片仅本地绘制。
+
+实例列表和状态会显示接口返回的 `name` 与 `description`，保留描述换行；状态用量另列。卡片支持 Minecraft 的 `§`／`&` 颜色代码、粗体、斜体、下划线、删除线和重置，以及 `§#RRGGBB`／`&#RRGGBB`、`§x§R§R§G§G§B§B` 形式的十六进制颜色，兼容 JSON `text`／`extra` 文本组件。`§k` 不生成动态乱码，文字回退移除有效样式代码。此处展示的是面板提供的名称和描述；没有描述时显示“未提供服务器描述”，不额外探测游戏端口获取联机 MOTD。
 
 ### 按操作配置群聊／私聊
 

@@ -42,6 +42,9 @@ class LocalCards:
             "small": self._font(16),
             "brand": self._font(14, True),
         }
+        for name, size in [("row", 25), ("text", 20), ("small", 16)]:
+            fonts[name + "_regular"] = self._font(size)
+            fonts[name + "_bold"] = self._font(size, True)
 
         def wrap(text, font, width):
             lines = []
@@ -56,7 +59,30 @@ class LocalCards:
                 lines.append(current)
             return lines
 
+        def wrap_styled(runs, style, width):
+            lines, line, x = [], [], 0
+            for run in runs:
+                font = style + ("_bold" if run.get("bold") else "_regular")
+                for char in run["text"].expandtabs(4):
+                    if char == "\n":
+                        lines.append(line)
+                        line, x = [], 0
+                        continue
+                    advance = probe.textlength(char, font=fonts[font])
+                    if line and x + advance > width - 12:
+                        lines.append(line)
+                        line, x = [], 0
+                    if line and line[-1][2] == font and line[-1][3] == run:
+                        previous = line[-1]
+                        line[-1] = (previous[0], previous[1] + char, font, run)
+                    else:
+                        line.append((x, char, font, run))
+                    x += advance
+            lines.append(line)
+            return lines
+
         blocks = []
+        styled_blocks = []
         y = 102
         for line in wrap(result.title, fonts["title"], 745):
             blocks.append((95, y - 45, line, "title", "#172D25"))
@@ -80,9 +106,16 @@ class LocalCards:
                 meta_start = y
                 if key == "meta":
                     y += 9
-                for line in wrap(row[key], fonts[style], 742):
-                    blocks.append((98 if key != "meta" else 108, y, line, style, color))
-                    y += line_height
+                left = 98 if key != "meta" else 108
+                if row.get(key + "_runs"):
+                    for line in wrap_styled(row[key + "_runs"], style, 742):
+                        for offset, text, font, run in line:
+                            styled_blocks.append((left + offset, y, text, font, color, run))
+                        y += line_height
+                else:
+                    for line in wrap(row[key], fonts[style], 742):
+                        blocks.append((left, y, line, style, color))
+                        y += line_height
                 if key == "meta":
                     y += 9
                     backgrounds.append((98, meta_start, 860, y, "#EDF3F7"))
@@ -129,6 +162,38 @@ class LocalCards:
             draw.line((40, sy, 860, sy), fill="#D9E2D8")
         for x, ty, text, font, color in blocks:
             draw.text((x, ty), text, font=fonts[font], fill=color)
+        for x, ty, text, font, default_color, run in styled_blocks:
+            color = run.get("color", default_color)
+            # Keep Minecraft white/yellow readable on the light card without changing their color.
+            rgb = tuple(int(color[index : index + 2], 16) for index in (1, 3, 5))
+            outline = 1 if sum(rgb) > 480 else 0
+            options = {
+                "font": fonts[font],
+                "fill": color,
+                "stroke_width": outline,
+                "stroke_fill": "#425D53",
+            }
+            if run.get("italic"):
+                width = int(probe.textlength(text, font=fonts[font])) + 6
+                height = fonts[font].size * 2 + 6
+                layer = Image.new("RGBA", (width, height))
+                ImageDraw.Draw(layer).text((2, 2), text, **options)
+                slanted = layer.transform(
+                    (width + int(height * 0.22) + 1, height),
+                    Image.Transform.AFFINE,
+                    (1, 0.22, -height * 0.22, 0, 1, 0),
+                    resample=Image.Resampling.BICUBIC,
+                )
+                image.paste(slanted, (int(x) - 2, ty - 2), slanted)
+            else:
+                draw.text((x, ty), text, **options)
+            length = probe.textlength(text, font=fonts[font])
+            for decoration, offset in [
+                ("underlined", fonts[font].size + 4),
+                ("strikethrough", fonts[font].size * 0.65 + 3),
+            ]:
+                if run.get(decoration):
+                    draw.line((x, ty + offset, x + length, ty + offset), fill=color, width=2)
         path = self.directory / f"mk_card_{secrets.token_hex(12)}.png"
         image.save(path)
         return str(path)
